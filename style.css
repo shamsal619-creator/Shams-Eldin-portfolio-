@@ -1,11 +1,11 @@
 /* ===================== FONTS ===================== */
 @font-face {
     font-family: 'Saifah';
-    src: url('fonts/saifah.ttf') format('truetype');
+    src: url('Fonts/saifah.ttf') format('truetype');
 }
 @font-face {
     font-family: 'Poppins';
-    src: url('fonts/Poppins-Bold.ttf') format('truetype');
+    src: url('Fonts/Poppins-Bold.ttf') format('truetype');
     font-weight: 700;
 }
 
