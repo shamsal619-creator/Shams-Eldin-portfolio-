@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shams Eldin | Professional Video Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- hidden legacy -->
+    <div class="ambient-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="apple-nav" id="main-nav">
+        <div class="container nav-container">
+            <a href="#" class="logo">Shams<span> Eldin</span></a>
+            <div class="nav-menu">
+                <a href="#work"       class="nav-link">Showreel</a>
+                <a href="#categories" class="nav-link">Projects</a>
+                <a href="#about"      class="nav-link">About</a>
+                <button id="theme-switch" class="theme-btn">Dark Mode</button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <!-- ============ HERO ============ -->
+        <section class="hero-section">
+
+            <!-- HERO SHAPES -->
+            <!-- Sun shape top-left, spinning -->
+            <div class="shape-wrap" style="
+                top: 8%; left: 2%;
+                width: 90px; height: 90px;
+                animation: spinSlow 20s linear infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/sun%20shape.png" alt="">
+            </div>
+
+            <!-- shape_3 (cross stars) top-right -->
+            <div class="shape-wrap" style="
+                top: 12%; right: 4%;
+                width: 110px; height: 110px;
+                animation: driftAround 12s ease-in-out infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/shape%203.png" alt="">
+            </div>
+
+            <!-- shape_4 (wave/crown) mid-right -->
+            <div class="shape-wrap" style="
+                top: 55%; right: 2%;
+                width: 130px; height: 130px;
+                animation: swingGently 9s ease-in-out infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/shape%204.png" alt="">
+            </div>
+
+            <!-- sun small bottom-left -->
+            <div class="shape-wrap" style="
+                bottom: 8%; left: 5%;
+                width: 55px; height: 55px;
+                animation: spinSlowReverse 25s linear infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/sun%20shape.png" alt="">
+            </div>
+
+            <div class="container hero-glass-box">
+                <div class="hero-content">
+                    <span class="badge">Professional Video Editor</span>
+                    <h1 class="cinematic-title">
+                        Cinematic
+                        <span class="gradient-text">Storytelling</span>
+                    </h1>
+                    <p>Transforming raw footage into high-end visual experiences — color grading, narrative flow, and commercial precision.</p>
+                    <div class="cta-group">
+                        <a href="#categories" class="btn-primary">View Projects</a>
+                        <a href="#about"       class="btn-secondary">Contact Me</a>
+                    </div>
+                </div>
+                <div class="hero-image-area">
+                    <div class="profile-circle">
+                        <img src="your-image.jpg" alt="Shams Eldin">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SHOWREEL ============ -->
+        <section id="work" class="work-section">
+
+            <!-- SHOWREEL SHAPES -->
+            <!-- shape_2 (fan/rays) left -->
+            <div class="shape-wrap" style="
+                top: 15%; left: -20px;
+                width: 160px; height: 100px;
+                animation: gentleWave 8.5s ease-in-out infinite;
+                opacity: 1;
+                transform: scaleX(-1);
+            ">
+                <img src="Assets/shape%205.png" alt="">
+            </div>
+
+            <!-- shape_3 right -->
+            <div class="shape-wrap" style="
+                bottom: 10%; right: 3%;
+                width: 95px; height: 95px;
+                animation: morphFloat 10s 0.5s ease-in-out infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/shape%206.png" alt="">
+            </div>
+
+            <!-- sun top-right -->
+            <div class="shape-wrap" style="
+                top: -30px; right: 8%;
+                width: 70px; height: 70px;
+                animation: spinSlow 18s linear infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/sun%20shape.png" alt="">
+            </div>
+
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-eyebrow">Featured Work</div>
+                    <h2 class="section-title">Showreel</h2>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="video-container" style="position: relative;">
+                    <video id="showreel-video" controls playsinline preload="metadata" style="display:none; background-color: #000;">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="placeholder-video" id="placeholder-bg"></div>
+                    
+                    <!-- Quality Selector Overlay -->
+                    <div class="quality-overlay" id="quality-overlay" style="display: none; position: absolute; top: 10px; right: 10px; z-index: 10; opacity: 0.8;">
+                        <select id="quality-select" style="padding: 6px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 3px; background: rgba(0,0,0,0.6); color: white; font-family: 'Poppins'; cursor: pointer; font-size: 11px;">
+                            <option value="auto" selected>Auto</option>
+                            <option value="1080p">1080p</option>
+                            <option value="720p">720p</option>
+                            <option value="480p">480p</option>
+                        </select>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+        <!-- ============ CATEGORIES ============ -->
+        <section id="categories" class="categories-section">
+
+            <!-- CATEGORIES SHAPES -->
+            <!-- shape_4 (wave) top-left -->
+            <div class="shape-wrap" style="
+                top: -20px; left: 3%;
+                width: 140px; height: 140px;
+                animation: gentleWave 11s ease-in-out infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/shape%207.png" alt="">
+            </div>
+
+            <!-- shape_2 (fan) top-right -->
+            <div class="shape-wrap" style="
+                top: 5%; right: 2%;
+                width: 180px; height: 110px;
+                animation: rotateFloat 9.5s ease-in-out infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/shape%202.png" alt="">
+            </div>
+
+            <!-- sun mid-left -->
+            <div class="shape-wrap" style="
+                top: 45%; left: 1%;
+                width: 65px; height: 65px;
+                animation: spinSlow 22s linear infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/sun%20shape.png" alt="">
+            </div>
+
+            <!-- shape_3 bottom-right -->
+            <div class="shape-wrap" style="
+                bottom: 5%; right: 4%;
+                width: 100px; height: 100px;
+                animation: breathScale 9s 1s ease-in-out infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/shape%203.png" alt="">
+            </div>
+
+            <!-- sun small bottom-left -->
+            <div class="shape-wrap" style="
+                bottom: 8%; left: 6%;
+                width: 48px; height: 48px;
+                animation: spinSlowReverse 30s linear infinite;
+                opacity: 1;
+            ">
+                <img src="Assets/sun%20shape.png" alt="">
+            </div>
+
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-eyebrow">Portfolio</div>
+                    <h2 class="section-title">Project Categories</h2>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="categories-grid">
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/Animation.png" alt="Animation Shorts"></div>
+                        <div class="category-info"><h3>Animation Shorts</h3></div>
+                    </div>
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/Real Estate.png" alt="Real Estate"></div>
+                        <div class="category-info"><h3>Real Estate</h3></div>
+                    </div>
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/Ai ads.png" alt="AI Ads"></div>
+                        <div class="category-info"><h3>AI Ads</h3></div>
+                    </div>
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/Cars Reels.png" alt="Car Reels"></div>
+                        <div class="category-info"><h3>Car Reels</h3></div>
+                    </div>
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/Coloring.png" alt="Color Grading"></div>
+                        <div class="category-info"><h3>Color Grading</h3></div>
+                    </div>
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/Long Form.png" alt="Long-Form"></div>
+                        <div class="category-info"><h3>Long-Form</h3></div>
+                    </div>
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/F&B.png" alt="F&B"></div>
+                        <div class="category-info"><h3>F&amp;B</h3></div>
+                    </div>
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/Insta Reels.png" alt="Insta Reels"></div>
+                        <div class="category-info"><h3>Insta Reels</h3></div>
+                    </div>
+                    <div class="category-card glass-card">
+                        <div class="category-cover"><img src="covers/Retouch.png" alt="Retouch"></div>
+                        <div class="category-info"><h3>Retouch</h3></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CONTACT ============ -->
+        <section id="about" class="contact-section">
+
+            <div class="shape-wrap" style="
+                top: 18%; right: 8%;
+                width: 100px; height: 100px;
+                animation: gentleWave 13s ease-in-out infinite;
+                opacity: .85;
+            ">
+                <img src="Assets/shape%204.png" alt="">
+            </div>
+
+            <div class="shape-wrap" style="
+                top: 8%; left: 5%;
+                width: 85px; height: 85px;
+                animation: spinSlow 24s linear infinite;
+                opacity: .8;
+            ">
+                <img src="Assets/sun%20shape.png" alt="">
+            </div>
+
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-eyebrow">Contact</div>
+                    <h2 class="section-title">Let&apos;s Talk About Your Next Project</h2>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="contact-grid">
+                    <div class="contact-card glass-card">
+                        <h3>Email & Booking</h3>
+                        <p>hello@shamseldin.com</p>
+                        <p>WhatsApp / Telegram available</p>
+                    </div>
+                </div>
+        </section>
+
+    </main>
+
+    <!-- ============ ADMIN FOOTER ============ -->
+    <footer class="admin-footer">
+        <button id="admin-link" class="admin-link">admin</button>
+    </footer>
+
+    <!-- ============ ADMIN TOGGLE BUTTON ============ -->
+    <button id="admin-toggle-btn" class="admin-toggle-btn" style="display: none;" title="Toggle Admin Panel">
+        <span>‹</span>
+    </button>
+
+    <!-- ============ ADMIN LOGIN MODAL ============ -->
+    <div id="admin-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <button id="close-admin-modal" class="close-modal">&times;</button>
+            <h2>Admin Access</h2>
+            <form id="admin-login-form" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="password-wrap">
+                    <input type="password" id="admin-password" placeholder="Enter password" required style="padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Poppins'; font-size: 14px;">
+                    <button type="button" class="eye-toggle" id="eye-toggle" title="Show / Hide password">
+                        <svg id="eye-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <button type="submit" class="btn-primary" style="padding: 12px;">Sign In</button>
+            </form>
+            <div id="admin-login-status" style="text-align: center; margin-top: 10px; color: var(--muted); font-size: 12px;"></div>
+        </div>
+    </div>
+
+    <!-- ============ ADMIN PANEL (hidden until login) ============ -->
+    <div id="admin-panel" class="admin-panel" style="display: none;">
+        <div class="admin-panel-header">
+            <button id="panel-collapse-btn" class="panel-collapse-btn" title="Hide panel">›</button>
+            <h2>Admin Control Panel</h2>
+            <button id="logout-btn" class="btn-secondary">Logout</button>
+        </div>
+        <div class="admin-panel-content">
+            <!-- Profile Settings -->
+            <div class="admin-section">
+                <h3>Profile Settings</h3>
+                <div class="admin-form-group">
+                    <label>Update Profile Photo</label>
+                    <div class="profile-upload-container">
+                        <input type="file" id="profile-photo-input" accept="image/*" style="display: none;">
+                        <button id="profile-photo-trigger" class="btn-secondary" style="width: 100%; margin-bottom: 10px;">Choose Photo</button>
+                    </div>
+                    <button id="upload-profile-btn" class="btn-primary" style="width: 100%;">Upload Profile Photo</button>
+                </div>
+            </div>
+
+            <!-- Showreel Management -->
+            <div class="admin-section">
+                <h3>Showreel Management</h3>
+                <div class="admin-form-group">
+                    <label>Upload New Showreel</label>
+                    <div class="showreel-upload-container">
+                        <input type="file" id="showreel-input" accept="video/*" style="display: none;">
+                        <button id="showreel-trigger" class="btn-secondary" style="width: 100%; margin-bottom: 10px;">Choose Video</button>
+                    </div>
+                    <button id="upload-showreel-admin-btn" class="btn-primary" style="width: 100%; margin-bottom: 10px;">Upload Showreel</button>
+                </div>
+                <div class="admin-form-group">
+                    <button id="delete-showreel-btn" class="btn-secondary" style="width: 100%;">Delete Current Showreel</button>
+                </div>
+            </div>
+
+            <!-- Category Management -->
+            <div class="admin-section">
+                <h3>Category Management</h3>
+                <div class="admin-form-group">
+                    <label>Upload Category Cover</label>
+                    <select id="category-select" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Poppins';">
+                        <option value="">Select a category...</option>
+                        <option value="animation-shorts">Animation Shorts</option>
+                        <option value="real-estate">Real Estate</option>
+                        <option value="ai-ads">AI Ads</option>
+                        <option value="car-reels">Car Reels</option>
+                        <option value="color-grading">Color Grading</option>
+                        <option value="long-form">Long-Form</option>
+                        <option value="fb">F&amp;B</option>
+                        <option value="medical">Insta Reels</option>
+                        <option value="retouch">Retouch</option>
+                    </select>
+                    <input type="file" id="category-cover-input" accept="image/*" style="display: none;">
+                    <button id="category-cover-trigger" class="btn-secondary" style="width: 100%; margin-bottom: 10px;">Choose Cover Image</button>
+                    <button id="upload-category-cover-btn" class="btn-primary" style="width: 100%;">Upload Category Cover</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"s:\\\\shams portfolio web\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"Directory\"}else{\"File\"}}} | Format-Table -AutoSize)",
+      "Bash(node -e \"require\\('playwright'\\)\")",
+      "Bash(node -e \"require\\('puppeteer'\\)\")",
+      "PowerShell(Get-Process -Name \"chrome\",\"msedge\",\"firefox\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Start-Process \"chrome\" -ArgumentList \"http://localhost:8000\" 2>&1)",
+      "PowerShell(Get-Process -Name \"node\" -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep 1; Start-Process node -ArgumentList \"server.js\" -WorkingDirectory \"s:\\\\shams portfolio web\"; Start-Sleep 2; try { \\(Invoke-WebRequest -Uri \"http://localhost:8000/api/category/animation-shorts\" -UseBasicParsing -TimeoutSec 3\\).StatusCode } catch { \"Error: $_\" })",
+      "Skill(anthropic-skills:impeccable)",
+      "Skill(anthropic-skills:impeccable:*)",
+      "Bash(node \"C:\\\\Users\\\\shams\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\81b0fce1-ac06-4841-ad39-76b59845a8df\\\\09f79a46-5a49-411e-a0b4-67337af3ac60\\\\skills\\\\impeccable\\\\scripts\\\\context.mjs\")",
+      "Bash(ls \"C:\\\\Users\\\\shams\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\81b0fce1-ac06-4841-ad39-76b59845a8df\\\\09f79a46-5a49-411e-a0b4-67337af3ac60\\\\skills\\\\impeccable\")",
+      "Bash(mkdir -p \"S:\\\\shams portfolio web\\\\.claude\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s http://localhost:8000/)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :8000)",
+      "PowerShell(Stop-Process -Id 6104 -Force)",
+      "Bash(curl -s http://localhost:8000/api/category/animation-shorts)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(p['id'], p['thumbnail']\\) for p in d['projects']]\")",
+      "Bash(curl -s -X DELETE http://localhost:8000/api/projects/1 -H \"Content-Type: application/json\" -d \"{\\\\\"adminEmail\\\\\":\\\\\"shamsal619@gmail.com\\\\\"}\")",
+      "Bash(curl -s -X DELETE http://localhost:8000/api/projects/2 -H \"Content-Type: application/json\" -d \"{\\\\\"adminEmail\\\\\":\\\\\"shamsal619@gmail.com\\\\\"}\")",
+      "Bash(node -e \"const d=require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\); const j=JSON.parse\\(d\\); console.log\\('Categories OK:', j.success, '| Projects:', j.projects?.length\\);\")",
+      "Bash(curl -s -X POST http://localhost:8000/api/projects -H \"Content-Type: application/json\" -d \"{\\\\\"categorySlug\\\\\":\\\\\"animation-shorts\\\\\",\\\\\"type\\\\\":\\\\\"video\\\\\",\\\\\"url\\\\\":\\\\\"https://youtube.com/shorts/_m5okcf-hFU?feature=share\\\\\",\\\\\"title\\\\\":\\\\\"Animation Short 1\\\\\",\\\\\"adminEmail\\\\\":\\\\\"shamsal619@gmail.com\\\\\"}\")",
+      "Bash(curl -s -X POST http://localhost:8000/api/projects -H \"Content-Type: application/json\" -d \"{\\\\\"categorySlug\\\\\":\\\\\"animation-shorts\\\\\",\\\\\"type\\\\\":\\\\\"video\\\\\",\\\\\"url\\\\\":\\\\\"https://youtube.com/shorts/xNzKE8nXxko?feature=share\\\\\",\\\\\"title\\\\\":\\\\\"Animation Short 2\\\\\",\\\\\"adminEmail\\\\\":\\\\\"shamsal619@gmail.com\\\\\"}\")",
+      "Bash(node -e \"const sqlite3=require\\('sqlite3'\\).verbose\\(\\);const db=new sqlite3.Database\\('./db.sqlite'\\);db.run\\(\\\\\"UPDATE categories SET displayName='Insta Reels' WHERE slug='medical'\\\\\",function\\(err\\){if\\(err\\)console.error\\(err\\);else console.log\\('Updated rows:',this.changes\\);db.close\\(\\);}\\);\")",
+      "Bash(node server.js)",
+      "Bash(curl -s http://localhost:8000)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
