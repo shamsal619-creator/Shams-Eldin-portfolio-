@@ -343,7 +343,7 @@ app.post('/api/upload-category-cover', categoryUpload.single('coverImage'), (req
 });
 
 // Add project
-app.post('/api/projects', (req, res) => {
+app.post('/api/projects', async (req, res) => {
     const { categorySlug, type, url, title, description, adminEmail } = req.body;
     if (!categorySlug || !type || !url || !adminEmail)
         return res.status(400).json({ success: false, message: 'Missing required fields' });
@@ -354,9 +354,27 @@ app.post('/api/projects', (req, res) => {
     if (!category) return res.status(404).json({ success: false, message: 'Category not found' });
 
     let thumbnailUrl = url;
+
     if (type === 'video') {
+        // YouTube
         const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([^&\s?/]+)/);
-        if (yt) thumbnailUrl = `https://img.youtube.com/vi/${yt[1]}/maxresdefault.jpg`;
+        if (yt) {
+            thumbnailUrl = `https://img.youtube.com/vi/${yt[1]}/maxresdefault.jpg`;
+        }
+        // Vimeo — fetch thumbnail from oEmbed API
+        const vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+        if (vm) {
+            try {
+                const vimeoRes = await fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`);
+                if (vimeoRes.ok) {
+                    const vimeoData = await vimeoRes.json();
+                    if (vimeoData.thumbnail_url) thumbnailUrl = vimeoData.thumbnail_url;
+                }
+            } catch (e) {
+                console.error('Vimeo thumbnail fetch failed:', e.message);
+                thumbnailUrl = url; // fallback
+            }
+        }
     }
 
     const projectTitle = title || (type === 'video' ? 'Video Project' : 'Image Project');
