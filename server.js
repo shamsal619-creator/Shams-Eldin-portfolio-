@@ -9,15 +9,24 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+// Persistent data directory (Railway Volume or local)
+const DATA_DIR = process.env.NODE_ENV === 'production'
+    ? '/app/data'
+    : path.join(__dirname);
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+
 /* ===================== MIDDLEWARE ===================== */
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+// Serve uploaded files from persistent data dir
+app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads')));
+app.use('/covers', express.static(path.join(DATA_DIR, 'covers')));
 
 /* ===================== MULTER CONFIG ===================== */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, 'uploads');
+        const uploadDir = path.join(DATA_DIR, 'uploads');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
@@ -46,7 +55,7 @@ const upload = multer({
 });
 
 /* ===================== DATABASE SETUP ===================== */
-const db = new Database(path.join(__dirname, 'db.sqlite'));
+const db = new Database(path.join(DATA_DIR, 'db.sqlite'));
 db.pragma('journal_mode = WAL');
 console.log('Connected to SQLite database');
 initializeDatabase();
@@ -280,7 +289,7 @@ app.get('/api/profile', (req, res) => {
 const profileUpload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            const uploadDir = path.join(__dirname, 'uploads', 'profile');
+            const uploadDir = path.join(DATA_DIR, 'uploads', 'profile');
             if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
             cb(null, uploadDir);
         },
@@ -311,7 +320,7 @@ app.post('/api/upload-profile', profileUpload.single('profilePhoto'), (req, res)
 const categoryUpload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            const uploadDir = path.join(__dirname, 'covers');
+            const uploadDir = path.join(DATA_DIR, 'covers');
             if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
             cb(null, uploadDir);
         },
