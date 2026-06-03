@@ -93,6 +93,7 @@ function initializeDatabase() {
             type TEXT,
             fileUrl TEXT,
             thumbnailUrl TEXT,
+            orientation TEXT DEFAULT 'portrait',
             createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (categoryId) REFERENCES categories(id)
         );
@@ -102,6 +103,9 @@ function initializeDatabase() {
             updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         );
     `);
+
+    // Add orientation column if missing (for existing DBs)
+    try { db.exec("ALTER TABLE projects ADD COLUMN orientation TEXT DEFAULT 'portrait'"); } catch(e) {}
 
     const categories = [
         { slug: 'animation-shorts', displayName: 'Animation Shorts' },
@@ -274,7 +278,8 @@ app.get('/api/category/:slug', (req, res) => {
         category: { slug: category.slug, displayName: category.displayName, coverImage: category.coverImage },
         projects: projects.map(p => ({
             id: p.id, title: p.title, description: p.description,
-            type: p.type, fileUrl: p.fileUrl, thumbnail: p.thumbnailUrl
+            type: p.type, fileUrl: p.fileUrl, thumbnail: p.thumbnailUrl,
+            orientation: p.orientation || 'portrait'
         }))
     });
 });
@@ -363,14 +368,22 @@ app.post('/api/projects', async (req, res) => {
     if (!category) return res.status(404).json({ success: false, message: 'Category not found' });
 
     let thumbnailUrl = url;
+    let orientation = 'portrait'; // default
 
     if (type === 'video') {
-        // YouTube
-        const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([^&\s?/]+)/);
-        if (yt) {
-            thumbnailUrl = `https://img.youtube.com/vi/${yt[1]}/maxresdefault.jpg`;
+        // YouTube Shorts → portrait
+        const ytShort = url.match(/youtube\.com\/shorts\/([^&\s?/]+)/);
+        if (ytShort) {
+            thumbnailUrl = `https://img.youtube.com/vi/${ytShort[1]}/maxresdefault.jpg`;
+            orientation = 'portrait';
         }
-        // Vimeo — fetch thumbnail from oEmbed API
+        // YouTube regular → landscape
+        const ytWatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s?/]+)/);
+        if (ytWatch) {
+            thumbnailUrl = `https://img.youtube.com/vi/${ytWatch[1]}/maxresdefault.jpg`;
+            orientation = 'landscape';
+        }
+        // Vimeo — fetch thumbnail + detect orientation from oEmbed
         const vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
         if (vm) {
             try {
@@ -378,22 +391,22 @@ app.post('/api/projects', async (req, res) => {
                 if (vimeoRes.ok) {
                     const vimeoData = await vimeoRes.json();
                     if (vimeoData.thumbnail_url) thumbnailUrl = vimeoData.thumbnail_url;
+                    orientation = (vimeoData.width > vimeoData.height) ? 'landscape' : 'portrait';
                 }
             } catch (e) {
-                console.error('Vimeo thumbnail fetch failed:', e.message);
-                thumbnailUrl = url; // fallback
+                console.error('Vimeo oEmbed fetch failed:', e.message);
             }
         }
     }
 
     const projectTitle = title || (type === 'video' ? 'Video Project' : 'Image Project');
     const result = db.prepare(
-        'INSERT INTO projects (categoryId, title, description, type, fileUrl, thumbnailUrl) VALUES (?, ?, ?, ?, ?, ?)'
-    ).run(category.id, projectTitle, description || '', type, url, thumbnailUrl);
+        'INSERT INTO projects (categoryId, title, description, type, fileUrl, thumbnailUrl, orientation) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).run(category.id, projectTitle, description || '', type, url, thumbnailUrl, orientation);
 
     res.json({
         success: true,
-        project: { id: result.lastInsertRowid, title: projectTitle, description: description || '', type, fileUrl: url, thumbnail: thumbnailUrl }
+        project: { id: result.lastInsertRowid, title: projectTitle, description: description || '', type, fileUrl: url, thumbnail: thumbnailUrl, orientation }
     });
 });
 

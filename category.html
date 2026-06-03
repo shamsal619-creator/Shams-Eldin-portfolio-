@@ -280,9 +280,10 @@
         /* ===== PROJECTS GRID ===== */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 300px));
+            grid-template-columns: repeat(6, minmax(0, 150px));
             gap: 4px;
             justify-content: center;
+            grid-auto-flow: dense;
             background: transparent;
         }
 
@@ -292,6 +293,13 @@
             overflow: hidden;
             cursor: pointer;
             position: relative;
+            /* portrait: takes 2 of 6 columns */
+            grid-column: span 2;
+        }
+
+        /* landscape card: takes 3 of 6 columns */
+        .project-card.landscape {
+            grid-column: span 3;
         }
 
         /* thumbnail — 9:16 portrait */
@@ -301,6 +309,11 @@
             position: relative;
             overflow: hidden;
             background: #111;
+        }
+
+        /* landscape thumbnail — 16:9 */
+        .project-card.landscape .project-thumbnail {
+            aspect-ratio: 16 / 9;
         }
         .project-thumbnail img {
             width: 100%; height: 100%;
@@ -538,12 +551,17 @@
         @media (max-width: 768px) {
             .cat-title { font-size: 3.2rem; }
             .cat-cover { height: 46vh; min-height: 260px; padding: 40px 16px; }
-            .projects-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; }
+            .projects-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; }
+            .project-card          { grid-column: span 2; } /* portrait: 2 of 4 */
+            .project-card.landscape{ grid-column: span 4; } /* landscape: full width */
+            .project-card.landscape .project-thumbnail { aspect-ratio: 16 / 9; }
         }
         @media (max-width: 480px) {
             .cat-title { font-size: 2.5rem; letter-spacing: -1px; }
             .cat-cover { height: 38vh; min-height: 200px; padding: 30px 14px; }
             .projects-grid { grid-template-columns: repeat(2, 1fr); gap: 3px; }
+            .project-card          { grid-column: span 1; }
+            .project-card.landscape{ grid-column: span 2; }
             .command-prompt { flex-wrap: wrap; }
         }
     </style>
@@ -823,10 +841,11 @@
         }
 
         function buildProjectCard(p) {
-            const thumb    = p.thumbnail || '';
-            const isVideo  = p.type === 'video';
-            const embedUrl = isVideo ? getEmbedUrl(p.fileUrl) : null;
-            const canPlay  = isVideo && embedUrl !== null;
+            const thumb       = p.thumbnail || '';
+            const isVideo     = p.type === 'video';
+            const embedUrl    = isVideo ? getEmbedUrl(p.fileUrl) : null;
+            const canPlay     = isVideo && embedUrl !== null;
+            const isLandscape = p.orientation === 'landscape';
 
             const deleteBtn = adminSession
                 ? `<button class="project-delete" onclick="deleteProject(event,${p.id})" title="Delete">×</button>`
@@ -859,7 +878,7 @@
                 : `onclick="window.open('${escHtml(p.fileUrl)}','_blank','noopener')"`;
 
             return `
-                <div class="project-card" ${clickHandler}
+                <div class="project-card${isLandscape ? ' landscape' : ''}" ${clickHandler}
                      data-url="${escHtml(p.fileUrl)}"
                      data-embed="${escHtml(embedUrl || '')}"
                      data-type="${p.type}">
