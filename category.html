@@ -854,6 +854,7 @@
 
             const thumbImg = thumb
                 ? `<img src="${escHtml(thumb)}" alt="${escHtml(p.title)}" loading="lazy"
+                       onload="checkThumbSize(this)"
                        onerror="ytFallback(this)">`
                 : `<div style="width:100%;height:100%;background:#111;"></div>`;
 
@@ -1075,11 +1076,12 @@
         }
 
         /* ===== THUMBNAIL FALLBACK ===== */
-        // YouTube quality ladder: maxresdefault → sddefault → hqdefault → mqdefault
-        const YT_QUALITY = ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault'];
+        // YouTube quality ladder: maxresdefault(1280x720) → sddefault(640x480) → hqdefault(480x360)
+        const YT_QUALITY = ['maxresdefault', 'sddefault', 'hqdefault'];
+
         function ytFallback(img) {
             const src = img.src;
-            const match = src.match(/\/vi\/([^/]+)\/(maxresdefault|sddefault|hqdefault|mqdefault)\.jpg/);
+            const match = src.match(/\/vi\/([^/]+)\/(maxresdefault|sddefault|hqdefault)\.jpg/);
             if (match) {
                 const idx = YT_QUALITY.indexOf(match[2]);
                 if (idx !== -1 && idx < YT_QUALITY.length - 1) {
@@ -1087,8 +1089,15 @@
                     return;
                 }
             }
-            // Not a YouTube thumbnail or exhausted — hide broken img
             img.style.opacity = '0';
+        }
+
+        // YouTube returns 120x90 placeholder (200 OK) when maxresdefault missing
+        // → onerror won't fire, so we check actual dimensions on load
+        function checkThumbSize(img) {
+            if (img.naturalWidth <= 120 || img.naturalWidth === 0) {
+                ytFallback(img);
+            }
         }
 
         /* ===== HELPERS ===== */

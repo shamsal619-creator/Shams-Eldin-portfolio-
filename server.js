@@ -134,19 +134,9 @@ function initializeDatabase() {
 
 /* ===================== HELPER FUNCTIONS ===================== */
 
-// Try YouTube quality ladder and return best available thumbnail URL
-async function getBestYTThumb(videoId) {
-    const qualities = ['maxresdefault', 'sddefault', 'hqdefault'];
-    for (const q of qualities) {
-        const url = `https://img.youtube.com/vi/${videoId}/${q}.jpg`;
-        try {
-            const res = await fetch(url, { method: 'HEAD' });
-            // YouTube returns a 120x90 placeholder for missing maxresdefault — check content-length
-            const len = parseInt(res.headers.get('content-length') || '0');
-            if (res.ok && len > 5000) return url; // real thumbnail, not placeholder
-        } catch (e) { /* network error, try next */ }
-    }
-    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; // final fallback
+// Always use maxresdefault — client-side onload checks actual dimensions and falls back
+function getBestYTThumb(videoId) {
+    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 }
 
 function verifyAdmin(email, password) {
@@ -390,13 +380,13 @@ app.post('/api/projects', async (req, res) => {
         // YouTube Shorts → portrait
         const ytShort = url.match(/youtube\.com\/shorts\/([^&\s?/]+)/);
         if (ytShort) {
-            thumbnailUrl = await getBestYTThumb(ytShort[1]);
+            thumbnailUrl = getBestYTThumb(ytShort[1]);
             orientation = 'portrait';
         }
         // YouTube regular → landscape
         const ytWatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s?/]+)/);
         if (ytWatch) {
-            thumbnailUrl = await getBestYTThumb(ytWatch[1]);
+            thumbnailUrl = getBestYTThumb(ytWatch[1]);
             orientation = 'landscape';
         }
         // Vimeo — fetch thumbnail + detect orientation from oEmbed
