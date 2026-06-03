@@ -406,7 +406,12 @@ app.post('/api/projects', async (req, res) => {
                 const vimeoRes = await fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`);
                 if (vimeoRes.ok) {
                     const vimeoData = await vimeoRes.json();
-                    if (vimeoData.thumbnail_url) thumbnailUrl = vimeoData.thumbnail_url;
+                    if (vimeoData.thumbnail_url) {
+                        // Request the largest available size from Vimeo CDN
+                        thumbnailUrl = vimeoData.thumbnail_url
+                            .replace(/_\d+x\d+\./, '_1280x720.')   // common pattern
+                            .replace(/\?.*$/, '');                   // strip query params
+                    }
                     orientation = (vimeoData.width > vimeoData.height) ? 'landscape' : 'portrait';
                 }
             } catch (e) {
