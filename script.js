@@ -395,170 +395,138 @@ async function loadProfileImage() {
 }
 
 function setupAdminUpload() {
-    const profileUploadBtn = document.getElementById('upload-profile-btn');
-    const profilePhotoInput = document.getElementById('profile-photo-input');
+    const profilePhotoInput   = document.getElementById('profile-photo-input');
     const profilePhotoTrigger = document.getElementById('profile-photo-trigger');
-    const showreelUploadBtn = document.getElementById('upload-showreel-admin-btn');
-    const showreelInput = document.getElementById('showreel-input');
+    const profileStatus       = document.getElementById('profile-upload-status');
+
+    const showreelInput   = document.getElementById('showreel-input');
     const showreelTrigger = document.getElementById('showreel-trigger');
-    const deleteShowreelBtn = document.getElementById('delete-showreel-btn');
-    const categorySelect = document.getElementById('category-select');
-    const categoryCoverInput = document.getElementById('category-cover-input');
-    const categoryCoverTrigger = document.getElementById('category-cover-trigger');
-    const uploadCategoryCoverBtn = document.getElementById('upload-category-cover-btn');
+    const showreelStatus  = document.getElementById('showreel-upload-status');
 
-    // Profile photo trigger
-    if (profilePhotoTrigger) {
-        profilePhotoTrigger.addEventListener('click', () => {
-            profilePhotoInput.click();
-        });
+    const deleteShowreelBtn   = document.getElementById('delete-showreel-btn');
+    const categorySelect      = document.getElementById('category-select');
+    const categoryCoverInput  = document.getElementById('category-cover-input');
+    const categoryCoverTrigger= document.getElementById('category-cover-trigger');
+    const coverStatus         = document.getElementById('cover-upload-status');
+
+    /* ---- helper ---- */
+    function setStatus(el, msg, color) {
+        if (!el) return;
+        el.textContent = msg;
+        el.style.color = color || 'var(--muted)';
     }
 
-    // Showreel trigger
-    if (showreelTrigger) {
-        showreelTrigger.addEventListener('click', () => {
-            showreelInput.click();
-        });
-    }
+    /* ---- Profile photo: click button → open picker → auto-upload ---- */
+    if (profilePhotoTrigger && profilePhotoInput) {
+        profilePhotoTrigger.addEventListener('click', () => profilePhotoInput.click());
 
-    // Category cover trigger
-    if (categoryCoverTrigger) {
-        categoryCoverTrigger.addEventListener('click', () => {
-            categoryCoverInput.click();
-        });
-    }
-
-    if (profileUploadBtn && profilePhotoInput) {
-        profileUploadBtn.addEventListener('click', async () => {
+        profilePhotoInput.addEventListener('change', async () => {
             const file = profilePhotoInput.files[0];
-            if (!file) {
-                alert('Please select an image');
-                return;
-            }
+            if (!file) return;
+            profilePhotoTrigger.disabled = true;
+            setStatus(profileStatus, 'Uploading...', 'var(--muted)');
 
             const formData = new FormData();
             formData.append('profilePhoto', file);
-
             try {
-                const response = await fetch('/api/upload-profile', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
+                const res  = await fetch('/api/upload-profile', { method: 'POST', body: formData });
+                const data = await res.json();
                 if (data.success) {
-                    alert('Profile photo updated successfully!');
-                    profilePhotoInput.value = '';
-                    // Update the image on the page
-                    const profileImg = document.querySelector('.profile-circle img');
-                    if (profileImg) {
-                        profileImg.src = data.imageUrl + '?t=' + new Date().getTime();
-                    }
+                    setStatus(profileStatus, '✓ Photo updated!', 'var(--blue)');
+                    const img = document.querySelector('.profile-circle img');
+                    if (img) img.src = data.imageUrl + '?t=' + Date.now();
                 } else {
-                    alert('Error: ' + data.message);
+                    setStatus(profileStatus, 'Error: ' + data.message, '#e55');
                 }
-            } catch (error) {
-                alert('Error uploading profile: ' + error.message);
+            } catch (e) {
+                setStatus(profileStatus, 'Error: ' + e.message, '#e55');
             }
+            profilePhotoInput.value = '';
+            profilePhotoTrigger.disabled = false;
         });
     }
 
-    if (showreelUploadBtn && showreelInput) {
-        showreelUploadBtn.addEventListener('click', async () => {
+    /* ---- Showreel: click button → open picker → auto-upload ---- */
+    if (showreelTrigger && showreelInput) {
+        showreelTrigger.addEventListener('click', () => showreelInput.click());
+
+        showreelInput.addEventListener('change', async () => {
             const file = showreelInput.files[0];
-            if (!file) {
-                alert('Please select a video');
-                return;
-            }
+            if (!file) return;
+            showreelTrigger.disabled = true;
+            setStatus(showreelStatus, 'Uploading... (this may take a moment)', 'var(--muted)');
 
             const formData = new FormData();
             formData.append('showreel', file);
             formData.append('adminEmail', adminSession.email);
-
             try {
-                const response = await fetch('/api/upload-showreel', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
+                const res  = await fetch('/api/upload-showreel', { method: 'POST', body: formData });
+                const data = await res.json();
                 if (data.success) {
-                    alert('Showreel uploaded successfully!');
-                    showreelInput.value = '';
-                    location.reload();
+                    setStatus(showreelStatus, '✓ Showreel uploaded!', 'var(--blue)');
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    alert('Error: ' + data.message);
+                    setStatus(showreelStatus, 'Error: ' + data.message, '#e55');
                 }
-            } catch (error) {
-                alert('Error uploading showreel: ' + error.message);
+            } catch (e) {
+                setStatus(showreelStatus, 'Error: ' + e.message, '#e55');
             }
+            showreelInput.value = '';
+            showreelTrigger.disabled = false;
         });
     }
 
+    /* ---- Delete showreel ---- */
     if (deleteShowreelBtn) {
         deleteShowreelBtn.addEventListener('click', async () => {
-            if (!confirm('Are you sure you want to delete the current showreel?')) return;
-
+            if (!confirm('Delete the current showreel?')) return;
             try {
-                const response = await fetch('/api/showreel', {
+                const res  = await fetch('/api/showreel', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        adminEmail: adminSession.email,
-                        password: localStorage.getItem('lastAdminPassword') || ''
-                    })
+                    body: JSON.stringify({ adminEmail: adminSession.email, password: '' })
                 });
-
-                const data = await response.json();
-                if (data.success) {
-                    alert('Showreel deleted successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                alert('Error deleting showreel: ' + error.message);
-            }
+                const data = await res.json();
+                if (data.success) { alert('Showreel deleted!'); location.reload(); }
+                else alert('Error: ' + data.message);
+            } catch (e) { alert('Error: ' + e.message); }
         });
     }
 
-    // Category cover upload
-    if (uploadCategoryCoverBtn) {
-        uploadCategoryCoverBtn.addEventListener('click', async () => {
-            const categorySlug = categorySelect.value;
+    /* ---- Category cover: select category → click button → open picker → auto-upload ---- */
+    if (categoryCoverTrigger && categoryCoverInput) {
+        categoryCoverTrigger.addEventListener('click', () => {
+            if (!categorySelect.value) {
+                setStatus(coverStatus, 'Please select a category first', '#e55');
+                return;
+            }
+            categoryCoverInput.click();
+        });
+
+        categoryCoverInput.addEventListener('change', async () => {
             const file = categoryCoverInput.files[0];
-
-            if (!categorySlug) {
-                alert('Please select a category');
-                return;
-            }
-
-            if (!file) {
-                alert('Please select an image');
-                return;
-            }
+            const categorySlug = categorySelect.value;
+            if (!file || !categorySlug) return;
+            categoryCoverTrigger.disabled = true;
+            setStatus(coverStatus, 'Uploading...', 'var(--muted)');
 
             const formData = new FormData();
             formData.append('categorySlug', categorySlug);
             formData.append('coverImage', file);
-
             try {
-                const response = await fetch('/api/upload-category-cover', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
+                const res  = await fetch('/api/upload-category-cover', { method: 'POST', body: formData });
+                const data = await res.json();
                 if (data.success) {
-                    alert('Category cover updated successfully!');
-                    categoryCoverInput.value = '';
+                    setStatus(coverStatus, '✓ Cover updated!', 'var(--blue)');
                     categorySelect.value = '';
                 } else {
-                    alert('Error: ' + data.message);
+                    setStatus(coverStatus, 'Error: ' + data.message, '#e55');
                 }
-            } catch (error) {
-                alert('Error uploading category cover: ' + error.message);
+            } catch (e) {
+                setStatus(coverStatus, 'Error: ' + e.message, '#e55');
             }
+            categoryCoverInput.value = '';
+            categoryCoverTrigger.disabled = false;
         });
     }
 }

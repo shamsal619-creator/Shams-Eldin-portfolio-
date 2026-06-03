@@ -333,11 +333,9 @@
                 <h3>Profile Settings</h3>
                 <div class="admin-form-group">
                     <label>Update Profile Photo</label>
-                    <div class="profile-upload-container">
-                        <input type="file" id="profile-photo-input" accept="image/*" style="display: none;">
-                        <button id="profile-photo-trigger" class="btn-secondary" style="width: 100%; margin-bottom: 10px;">Choose Photo</button>
-                    </div>
-                    <button id="upload-profile-btn" class="btn-primary" style="width: 100%;">Upload Profile Photo</button>
+                    <input type="file" id="profile-photo-input" accept="image/*" style="display: none;">
+                    <button id="profile-photo-trigger" class="btn-primary" style="width: 100%;">Upload Profile Photo</button>
+                    <div id="profile-upload-status" style="text-align:center;margin-top:8px;font-size:12px;color:var(--muted);"></div>
                 </div>
             </div>
 
@@ -346,11 +344,9 @@
                 <h3>Showreel Management</h3>
                 <div class="admin-form-group">
                     <label>Upload New Showreel</label>
-                    <div class="showreel-upload-container">
-                        <input type="file" id="showreel-input" accept="video/*" style="display: none;">
-                        <button id="showreel-trigger" class="btn-secondary" style="width: 100%; margin-bottom: 10px;">Choose Video</button>
-                    </div>
-                    <button id="upload-showreel-admin-btn" class="btn-primary" style="width: 100%; margin-bottom: 10px;">Upload Showreel</button>
+                    <input type="file" id="showreel-input" accept="video/*" style="display: none;">
+                    <button id="showreel-trigger" class="btn-primary" style="width: 100%; margin-bottom: 10px;">Upload Showreel</button>
+                    <div id="showreel-upload-status" style="text-align:center;margin-top:8px;font-size:12px;color:var(--muted);"></div>
                 </div>
                 <div class="admin-form-group">
                     <button id="delete-showreel-btn" class="btn-secondary" style="width: 100%;">Delete Current Showreel</button>
@@ -375,8 +371,8 @@
                         <option value="retouch">Retouch</option>
                     </select>
                     <input type="file" id="category-cover-input" accept="image/*" style="display: none;">
-                    <button id="category-cover-trigger" class="btn-secondary" style="width: 100%; margin-bottom: 10px;">Choose Cover Image</button>
-                    <button id="upload-category-cover-btn" class="btn-primary" style="width: 100%;">Upload Category Cover</button>
+                    <button id="category-cover-trigger" class="btn-primary" style="width: 100%;">Upload Category Cover</button>
+                    <div id="cover-upload-status" style="text-align:center;margin-top:8px;font-size:12px;color:var(--muted);"></div>
                 </div>
             </div>
         </div>
