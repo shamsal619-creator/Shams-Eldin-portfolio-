@@ -280,9 +280,10 @@
         /* ===== PROJECTS GRID ===== */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(6, minmax(0, 160px));
             gap: 4px;
             grid-auto-flow: dense;
+            justify-content: center;
             background: transparent;
         }
 
