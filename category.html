@@ -855,7 +855,7 @@
 
             const thumbImg = thumb
                 ? `<img src="${escHtml(thumb)}" alt="${escHtml(p.title)}" loading="lazy"
-                       onerror="this.src=this.src.replace('maxresdefault','hqdefault')">`
+                       onerror="ytFallback(this)">`
                 : `<div style="width:100%;height:100%;background:#111;"></div>`;
 
             const playBadge = canPlay
@@ -1073,6 +1073,23 @@
         function setStatus(el, msg, cls) {
             el.textContent = msg;
             el.className = 'command-status' + (cls ? ' ' + cls : '');
+        }
+
+        /* ===== THUMBNAIL FALLBACK ===== */
+        // YouTube quality ladder: maxresdefault → sddefault → hqdefault → mqdefault
+        const YT_QUALITY = ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault'];
+        function ytFallback(img) {
+            const src = img.src;
+            const match = src.match(/\/vi\/([^/]+)\/(maxresdefault|sddefault|hqdefault|mqdefault)\.jpg/);
+            if (match) {
+                const idx = YT_QUALITY.indexOf(match[2]);
+                if (idx !== -1 && idx < YT_QUALITY.length - 1) {
+                    img.src = src.replace(match[2], YT_QUALITY[idx + 1]);
+                    return;
+                }
+            }
+            // Not a YouTube thumbnail or exhausted — hide broken img
+            img.style.opacity = '0';
         }
 
         /* ===== HELPERS ===== */
