@@ -1229,3 +1229,110 @@ body.dark-mode .admin-form-group select:focus {
     .hero-glass-box, .badge, .cinematic-title,
     .hero-content > p, .cta-group { animation: none !important; }
 }
+
+/* =====================================================================
+   ARABIC / RTL SUPPORT
+   ===================================================================== */
+
+/* ---- Local Arabic fonts (served from /Fonts) ---- */
+@font-face {
+    font-family: 'Cairo';
+    src: url('Fonts/Cairo-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Thmanyah';
+    src: url('Fonts/thmanyahsans-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Thmanyah';
+    src: url('Fonts/thmanyahsans-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Palestine-Regular';
+    src: url('Fonts/Palestine-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+}
+
+/* ---- Base Arabic typography ---- */
+body.ar {
+    font-family: 'Cairo', sans-serif;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: 1.8;
+    font-size: 17px; /* Arabic reads smaller → slight bump */
+    text-align: right;
+}
+
+/* Arabic never uses letter-spacing or uppercase tracking */
+body.ar * {
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+}
+
+/* Main headings / section titles → Thmanyah */
+body.ar h1,
+body.ar h2,
+body.ar h3,
+body.ar .section-title {
+    font-family: 'Thmanyah', sans-serif;
+    line-height: 1.5;
+}
+
+/* Hero display + name + quotes → Palestine */
+body.ar .cinematic-title,
+body.ar .badge,
+body.ar .cat-title {
+    font-family: 'Palestine-Regular', serif;
+}
+
+/* Body copy slightly larger & comfortable */
+body.ar .hero-content > p,
+body.ar .section-note,
+body.ar .contact-card p,
+body.ar .cat-desc {
+    font-family: 'Cairo', sans-serif;
+    line-height: 1.9;
+}
+
+/* Uppercase labels look wrong in Arabic → normal case */
+body.ar .badge,
+body.ar .section-eyebrow,
+body.ar .nav-link,
+body.ar .theme-btn,
+body.ar .category-info h3,
+body.ar .cat-eyebrow,
+body.ar .btn-primary,
+body.ar .btn-secondary {
+    text-transform: none;
+}
+
+/* ---- RTL layout mirroring ---- */
+html[dir="rtl"] body { text-align: right; }
+
+/* hero text aligns right in Arabic */
+body.ar .hero-content { text-align: right; }
+body.ar .badge,
+body.ar .section-eyebrow { justify-content: flex-start; }
+
+/* keep the language button readable (English label in ar mode) */
+body.ar #lang-switch { font-family: 'Poppins', sans-serif; }
+
+/* On mobile the hero is centered for both languages — keep it centered */
+@media (max-width: 960px) {
+    body.ar .hero-content { text-align: center; }
+    body.ar .badge,
+    body.ar .section-eyebrow { justify-content: center; }
+}
+
+/* Arabic mobile: avoid oversized display headings overflowing */
+@media (max-width: 580px) {
+    body.ar { font-size: 16px; }
+    body.ar .cinematic-title { line-height: 1.3; }
+}

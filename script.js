@@ -38,27 +38,10 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-/* ===================== THEME TOGGLE ===================== */
-const themeBtn = document.getElementById('theme-switch');
+/* ===================== (language toggle handled in i18n.js) ===================== */
 const body = document.body;
 
-function updateThemeButton() {
-    const isDark = body.classList.contains('dark-mode');
-    themeBtn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-}
-
-themeBtn.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-    updateThemeButton();
-    localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
-});
-
 window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('theme') === 'dark') {
-        body.classList.add('dark-mode');
-    }
-    updateThemeButton();
-
     // Check admin session and show admin panel if logged in
     if (checkAdminSession()) {
         showAdminPanel();

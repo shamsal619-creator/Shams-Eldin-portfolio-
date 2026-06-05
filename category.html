@@ -575,7 +575,7 @@
         <div class="page-loader-sun">
             <img src="Assets/blue-sun-loader.svg" alt="">
         </div>
-        <span class="page-loader-text">Loading</span>
+        <span class="page-loader-text" data-i18n="loader.text">Loading</span>
     </div>
 
     <!-- Navigation -->
@@ -583,10 +583,10 @@
         <div class="container nav-container">
             <a href="index.html" class="logo">Shams<span> Eldin</span></a>
             <div class="nav-menu">
-                <a href="index.html#work"       class="nav-link">Showreel</a>
-                <a href="index.html#categories" class="nav-link">Projects</a>
-                <a href="index.html#about"      class="nav-link">About</a>
-                <button id="theme-switch" class="theme-btn">Dark Mode</button>
+                <a href="index.html#work"       class="nav-link" data-i18n="nav.showreel">Showreel</a>
+                <a href="index.html#categories" class="nav-link" data-i18n="nav.projects">Projects</a>
+                <a href="index.html#about"      class="nav-link" data-i18n="nav.about">About</a>
+                <button id="lang-switch" class="theme-btn">عربي</button>
             </div>
         </div>
     </nav>
@@ -619,9 +619,9 @@
 
             <div class="container">
                 <a href="index.html#categories" class="cat-back">
-                    <i class="cat-back-arrow">←</i> All Categories
+                    <i class="cat-back-arrow">←</i> <span data-i18n="catpage.allCategories">All Categories</span>
                 </a>
-                <div class="cat-eyebrow">Portfolio</div>
+                <div class="cat-eyebrow" data-i18n="catpage.eyebrow">Portfolio</div>
                 <h1 id="category-title" class="cat-title">Loading...</h1>
                 <div class="cat-divider"></div>
                 <p id="category-description" class="cat-desc">Explore this category</p>
@@ -674,7 +674,7 @@
                 </div>
 
                 <div class="cat-footer-back">
-                    <a href="index.html#categories">← Back to All Categories</a>
+                    <a href="index.html#categories">← <span data-i18n="catpage.backToAll">Back to All Categories</span></a>
                 </div>
             </div>
         </section>
@@ -711,6 +711,7 @@
     </div>
 
     <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="i18n.js"></script>
     <script>
         /* ===== STATE ===== */
         let adminSession = null;
@@ -742,18 +743,7 @@
             nav.classList.toggle('scrolled', window.scrollY > 0);
         }, { passive: true });
 
-        /* ===== THEME TOGGLE ===== */
-        const themeBtn = document.getElementById('theme-switch');
-
-        function updateThemeButton() {
-            themeBtn.textContent = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
-        }
-
-        themeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            updateThemeButton();
-            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-        });
+        /* ===== language toggle handled in i18n.js ===== */
 
         /* ===== ADMIN SESSION ===== */
         function checkAdminSession() {
@@ -776,9 +766,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
-            updateThemeButton();
-
             if (checkAdminSession()) {
                 showAdminCommandArea();
             }
@@ -812,12 +799,33 @@
                 if (!data.success) { window.location.href = 'index.html#categories'; return; }
 
                 const { displayName, coverImage } = data.category;
+                const lang = (window.getSiteLang && window.getSiteLang()) || 'en';
+
+                // Arabic names per slug (falls back to English displayName)
+                const AR_NAMES = {
+                    'animation-shorts': 'أنيميشن قصير',
+                    'real-estate':      'العقارات',
+                    'ai-ads':           'إعلانات الذكاء الاصطناعي',
+                    'car-reels':        'ريلز السيارات',
+                    'color-grading':    'الكولور جريدنج',
+                    'long-form':        'المحتوى الطويل',
+                    'fb':               'الأطعمة والمشروبات',
+                    'medical':          'ريلز إنستغرام',
+                    'retouch':          'ريتاتش الصور'
+                };
+                const shownName = (lang === 'ar' && AR_NAMES[currentCategorySlug]) ? AR_NAMES[currentCategorySlug] : displayName;
+
                 document.title = `${displayName} | Shams Eldin`;
-                document.getElementById('category-title').textContent = displayName;
+                document.getElementById('category-title').textContent = shownName;
 
                 const count = data.projects ? data.projects.length : 0;
-                document.getElementById('category-description').textContent =
-                    count > 0 ? `${count} Project${count !== 1 ? 's' : ''}` : 'Coming soon';
+                let desc;
+                if (lang === 'ar') {
+                    desc = count > 0 ? `${count} ${count === 1 ? 'عمل' : 'أعمال'}` : 'قريباً';
+                } else {
+                    desc = count > 0 ? `${count} Project${count !== 1 ? 's' : ''}` : 'Coming soon';
+                }
+                document.getElementById('category-description').textContent = desc;
 
                 // Admin-uploaded cover takes priority over local
                 if (coverImage) setLogoSrc(coverImage);
