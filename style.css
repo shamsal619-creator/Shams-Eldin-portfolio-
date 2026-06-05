@@ -757,42 +757,23 @@ body::after {
 
 .contact-icon {
     flex-shrink: 0;
-    width: 52px;
-    height: 52px;
-    border-radius: 13px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform .45s var(--ease), box-shadow .45s var(--ease);
+    transition: transform .45s var(--ease), filter .45s var(--ease);
     will-change: transform;
 }
+.contact-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
 .contact-item:hover .contact-icon {
-    transform: scale(1.1);
-}
-
-/* Email — site blue-sun theme */
-.contact-icon--email {
-    background: linear-gradient(135deg, #0a5bd3 0%, #003580 100%);
-}
-.contact-item:hover .contact-icon--email {
-    box-shadow: 0 8px 22px rgba(0,74,173,0.45);
-}
-
-/* WhatsApp — authentic green */
-.contact-icon--whatsapp {
-    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-}
-.contact-item:hover .contact-icon--whatsapp {
-    box-shadow: 0 8px 22px rgba(37,211,102,0.45);
-}
-
-/* Instagram — authentic pink-orange-purple */
-.contact-icon--instagram {
-    background: radial-gradient(circle at 30% 107%,
-                #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-}
-.contact-item:hover .contact-icon--instagram {
-    box-shadow: 0 8px 22px rgba(214,36,159,0.45);
+    transform: scale(1.12);
+    filter: drop-shadow(0 6px 14px rgba(0,74,173,0.35));
 }
 
 .contact-text {
