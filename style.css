@@ -48,6 +48,9 @@
     width: 160px;
     height: 160px;
     object-fit: contain;
+    display: block;
+    transform-origin: 50% 50%;
+    backface-visibility: hidden;
     animation: loaderSpin 2.4s linear infinite;
     will-change: transform;
 }
@@ -64,6 +67,8 @@
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
 }
+/* keep the sun perfectly centered while spinning */
+.page-loader { isolation: isolate; }
 @keyframes loaderPulse {
     0%, 100% { opacity: .45; }
     50%      { opacity: 1; }
