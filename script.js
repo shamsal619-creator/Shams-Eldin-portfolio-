@@ -1,8 +1,14 @@
 /* ===================== PAGE LOADER ===================== */
-window.addEventListener('load', () => {
+function hidePageLoader() {
     const loader = document.getElementById('page-loader');
-    if (loader) setTimeout(() => loader.classList.add('hidden'), 400);
-});
+    if (loader) loader.classList.add('hidden');
+}
+// If the page is already fully loaded, hide immediately; otherwise wait for load
+if (document.readyState === 'complete') {
+    hidePageLoader();
+} else {
+    window.addEventListener('load', hidePageLoader);
+}
 
 /* ===================== ADMIN SESSION MANAGEMENT ===================== */
 let adminSession = null;

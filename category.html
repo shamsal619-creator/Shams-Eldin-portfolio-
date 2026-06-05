@@ -760,11 +760,16 @@
         }
 
         /* ===== INIT ===== */
-        // Hide page loader once everything is ready
-        window.addEventListener('load', () => {
+        // Hide page loader only while the page is actually loading
+        function hidePageLoader() {
             const loader = document.getElementById('page-loader');
-            if (loader) setTimeout(() => loader.classList.add('hidden'), 400);
-        });
+            if (loader) loader.classList.add('hidden');
+        }
+        if (document.readyState === 'complete') {
+            hidePageLoader();
+        } else {
+            window.addEventListener('load', hidePageLoader);
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
