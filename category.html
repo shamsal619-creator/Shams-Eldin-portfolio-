@@ -551,17 +551,19 @@
         @media (max-width: 768px) {
             .cat-title { font-size: 3.2rem; }
             .cat-cover { height: 46vh; min-height: 260px; padding: 40px 16px; }
-            .projects-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3px; }
-            .project-card          { grid-column: span 2; } /* portrait: 2 of 4 */
-            .project-card.landscape{ grid-column: span 4; } /* landscape: full width */
+            /* 6 columns → 3 portrait per row (span 2) */
+            .projects-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; }
+            .project-card          { grid-column: span 2; } /* portrait: 3 per row */
+            .project-card.landscape{ grid-column: span 3; } /* landscape: 2 per row */
             .project-card.landscape .project-thumbnail { aspect-ratio: 16 / 9; }
         }
         @media (max-width: 480px) {
             .cat-title { font-size: 2.5rem; letter-spacing: -1px; }
             .cat-cover { height: 38vh; min-height: 200px; padding: 30px 14px; }
-            .projects-grid { grid-template-columns: repeat(2, 1fr); gap: 3px; }
-            .project-card          { grid-column: span 1; }
-            .project-card.landscape{ grid-column: span 2; }
+            /* keep 3 portrait per row on phones */
+            .projects-grid { grid-template-columns: repeat(6, 1fr); gap: 2px; }
+            .project-card          { grid-column: span 2; } /* 3 portrait per row */
+            .project-card.landscape{ grid-column: span 3; } /* 2 landscape per row */
             .command-prompt { flex-wrap: wrap; }
         }
     </style>
