@@ -22,11 +22,11 @@
     <!-- Navigation -->
     <nav class="apple-nav" id="main-nav">
         <div class="container nav-container">
-            <a href="#" class="logo">Shams<span> Eldin</span></a>
+            <a href="#" class="logo" data-i18n="brand.name">Shams<span> Eldin</span></a>
             <div class="nav-menu">
                 <a href="#work"       class="nav-link" data-i18n="nav.showreel">Showreel</a>
                 <a href="#categories" class="nav-link" data-i18n="nav.projects">Projects</a>
-                <a href="#about"      class="nav-link" data-i18n="nav.about">About</a>
+                <a href="#about"      class="nav-link" data-i18n="nav.about">Contacts</a>
                 <button id="lang-switch" class="theme-btn">عربي</button>
             </div>
         </div>
@@ -289,13 +289,52 @@
                     <h2 class="section-title" data-i18n="contact.title">Let&apos;s Talk About Your Next Project</h2>
                     <div class="section-divider"></div>
                 </div>
-                <div class="contact-grid">
-                    <div class="contact-card glass-card">
-                        <h3 data-i18n="contact.cardTitle">Email & Booking</h3>
-                        <p>hello@shamseldin.com</p>
-                        <p data-i18n="contact.whatsapp">WhatsApp / Telegram available</p>
-                    </div>
+                <div class="contact-list">
+
+                    <!-- EMAIL -->
+                    <a class="contact-item" href="mailto:shamseldin619@icloud.com">
+                        <span class="contact-icon contact-icon--email">
+                            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/>
+                                <path d="M3 6l9 6.5L21 6"/>
+                            </svg>
+                        </span>
+                        <span class="contact-text">
+                            <span class="contact-label" data-i18n="contact.emailLabel">Email</span>
+                            <span class="contact-value">shamseldin619@icloud.com</span>
+                        </span>
+                    </a>
+
+                    <!-- WHATSAPP -->
+                    <a class="contact-item" href="https://wa.me/201010624316" target="_blank" rel="noopener">
+                        <span class="contact-icon contact-icon--whatsapp">
+                            <svg viewBox="0 0 32 32" width="26" height="26" fill="#fff">
+                                <path d="M16.04 4C9.96 4 5.02 8.94 5.02 15.02c0 2.05.56 4.05 1.62 5.81L4.9 27.1l6.42-1.68a11 11 0 0 0 4.72 1.07h.01c6.08 0 11.02-4.94 11.02-11.02C27.07 8.94 22.13 4 16.04 4Zm0 20.2h-.01a9.13 9.13 0 0 1-4.66-1.28l-.33-.2-3.81 1 1.02-3.71-.22-.38a9.12 9.12 0 0 1-1.4-4.86c0-5.05 4.11-9.16 9.17-9.16 2.45 0 4.75.96 6.48 2.69a9.1 9.1 0 0 1 2.68 6.48c0 5.05-4.11 9.17-9.16 9.17Zm5.03-6.86c-.27-.14-1.63-.8-1.88-.9-.25-.09-.43-.13-.62.14-.18.27-.71.9-.87 1.08-.16.18-.32.2-.59.07-.27-.14-1.16-.43-2.21-1.36-.82-.73-1.37-1.63-1.53-1.9-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.62-1.5-.85-2.05-.22-.53-.45-.46-.62-.47-.16-.01-.34-.01-.53-.01-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.3 0 1.36.98 2.67 1.12 2.85.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.66.21 1.25.18 1.72.11.53-.08 1.63-.67 1.86-1.31.23-.64.23-1.19.16-1.31-.07-.12-.25-.18-.52-.32Z"/>
+                            </svg>
+                        </span>
+                        <span class="contact-text">
+                            <span class="contact-label" data-i18n="contact.whatsappLabel">WhatsApp</span>
+                            <span class="contact-value" dir="ltr">+20 101 062 4316</span>
+                        </span>
+                    </a>
+
+                    <!-- INSTAGRAM -->
+                    <a class="contact-item" href="https://instagram.com/shamseldin.22" target="_blank" rel="noopener">
+                        <span class="contact-icon contact-icon--instagram">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/>
+                                <circle cx="12" cy="12" r="4.2"/>
+                                <circle cx="17.6" cy="6.4" r="1.1" fill="#fff" stroke="none"/>
+                            </svg>
+                        </span>
+                        <span class="contact-text">
+                            <span class="contact-label" data-i18n="contact.instagramLabel">Instagram</span>
+                            <span class="contact-value" dir="ltr">@shamseldin.22</span>
+                        </span>
+                    </a>
+
                 </div>
+            </div>
         </section>
 
     </main>

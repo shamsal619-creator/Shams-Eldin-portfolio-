@@ -7,10 +7,12 @@
 
 const translations = {
     en: {
+        /* brand */
+        'brand.name': 'Shams<span> Eldin</span>',
         /* nav */
         'nav.showreel': 'Showreel',
         'nav.projects': 'Projects',
-        'nav.about': 'About',
+        'nav.about': 'Contacts',
 
         /* hero */
         'hero.badge': 'Shams Eldin · 3+ Years of Experience',
@@ -39,8 +41,9 @@ const translations = {
         /* contact */
         'contact.eyebrow': 'Contact',
         'contact.title': 'Let&apos;s Talk About Your Next Project',
-        'contact.cardTitle': 'Email &amp; Booking',
-        'contact.whatsapp': 'WhatsApp / Telegram available',
+        'contact.emailLabel': 'Email',
+        'contact.whatsappLabel': 'WhatsApp',
+        'contact.instagramLabel': 'Instagram',
 
         /* loader */
         'loader.text': 'Loading',
@@ -52,10 +55,12 @@ const translations = {
     },
 
     ar: {
+        /* brand */
+        'brand.name': 'شمس<span> الدين</span>',
         /* nav */
         'nav.showreel': 'الشوريل',
         'nav.projects': 'الأعمال',
-        'nav.about': 'نبذة',
+        'nav.about': 'تواصل',
 
         /* hero */
         'hero.badge': 'شمس الدين · خبرة أكثر من 3 سنوات',
@@ -84,8 +89,9 @@ const translations = {
         /* contact */
         'contact.eyebrow': 'تواصل',
         'contact.title': 'لنتحدّث عن مشروعك القادم',
-        'contact.cardTitle': 'البريد والحجز',
-        'contact.whatsapp': 'واتساب / تيليجرام متاح',
+        'contact.emailLabel': 'البريد الإلكتروني',
+        'contact.whatsappLabel': 'واتساب',
+        'contact.instagramLabel': 'إنستغرام',
 
         /* loader */
         'loader.text': 'جارٍ التحميل',
