@@ -906,16 +906,18 @@ body.ar .contact-value { font-family: 'Cairo', sans-serif; }
 
     .section-title { font-size: 2rem; }
     .contact-card, .contact-note { padding: 24px; }
-    /* keep decorative shapes on mobile, just smaller & subtler */
+    /* keep decorative shapes on mobile, just smaller & much subtler */
     /* scale the IMG (wrapper keeps its rotate/translate animation) */
-    .shape-wrap img { transform: scale(0.5); opacity: 0.55; }
+    /* low opacity so shapes read as faint background texture and never
+       fight the text they sit behind (titles, eyebrows, hero bio) */
+    .shape-wrap img { transform: scale(0.5); opacity: 0.18; }
     /* push shapes BEHIND content so they never overlap video/cards/text */
     .shape-wrap { z-index: 0; }
 }
 
 /* even smaller on the tightest phones */
 @media (max-width: 380px) {
-    .shape-wrap img { transform: scale(0.42); opacity: 0.5; }
+    .shape-wrap img { transform: scale(0.42); opacity: 0.15; }
 }
 
 /* ---------- Small phones (≤ 380px) ---------- */

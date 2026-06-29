@@ -2,4 +2,7 @@ node_modules/
 .env
 uploads/
 db.sqlite
+db.sqlite-shm
+db.sqlite-wal
+db.sqlite-journal
 your-image.jpg

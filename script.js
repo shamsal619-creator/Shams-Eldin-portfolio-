@@ -336,23 +336,28 @@ function initAdminSystem() {
     document.querySelectorAll('.category-card').forEach(card => {
         card.addEventListener('click', function(e) {
             if (e.target.closest('.admin-delete-btn')) return;
-            const categoryName = this.querySelector('h3').textContent.trim();
-            let categorySlug;
-            
-            // Map category names to database slugs
-            const categoryMap = {
-                'Animation Shorts': 'animation-shorts',
-                'Real Estate': 'real-estate',
-                'AI Ads': 'ai-ads',
-                'Car Reels': 'car-reels',
-                'Color Grading': 'color-grading',
-                'Long-Form': 'long-form',
-                'F&B': 'fb',
-                'Insta Reels': 'medical',
-                'Retouch': 'retouch'
-            };
-            
-            categorySlug = categoryMap[categoryName] || categoryName.toLowerCase().replace(/\s+/g, '-');
+
+            // Prefer the language-independent data-slug; fall back to mapping
+            // the English name for safety. Reading visible text breaks in
+            // Arabic mode because the h3 is translated.
+            let categorySlug = this.dataset.slug;
+
+            if (!categorySlug) {
+                const categoryName = this.querySelector('h3').textContent.trim();
+                const categoryMap = {
+                    'Animation Shorts': 'animation-shorts',
+                    'Real Estate': 'real-estate',
+                    'AI Ads': 'ai-ads',
+                    'Car Reels': 'car-reels',
+                    'Color Grading': 'color-grading',
+                    'Long-Form': 'long-form',
+                    'F&B': 'fb',
+                    'Insta Reels': 'medical',
+                    'Retouch': 'retouch'
+                };
+                categorySlug = categoryMap[categoryName] || categoryName.toLowerCase().replace(/\s+/g, '-');
+            }
+
             window.location.href = `category.html?name=${categorySlug}`;
         });
     });
