@@ -5,19 +5,44 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const AdmZip = require('adm-zip');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Persistent data directory (Railway Volume or local)
-const DATA_DIR = process.env.NODE_ENV === 'production'
-    ? '/app/data'
-    : path.join(__dirname);
+// Persistent data directory.
+// Configurable via DATA_DIR env. A relative value is resolved against the
+// project folder, so DATA_DIR="." means "store data next to the code" — this
+// is the git-as-data model (Render free tier: data committed to the repo).
+// Defaults keep old behaviour so nothing breaks:
+//   DATA_DIR set        -> that path (relative resolved against __dirname)
+//   production, no env   -> "/app/data"  (Fly.io volume mount)
+//   local/dev, no env    -> the project directory
+const DATA_DIR = process.env.DATA_DIR
+    ? path.resolve(__dirname, process.env.DATA_DIR)
+    : (process.env.NODE_ENV === 'production' ? '/app/data' : __dirname);
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 /* ===================== MIDDLEWARE ===================== */
 app.use(cors());
 app.use(express.json());
+
+// Security guard: block direct download of sensitive files. Important for the
+// git-as-data model where db.sqlite lives inside the served project folder.
+const BLOCKED_PATHS = [
+    /^\/db\.sqlite/i,          // db.sqlite, -wal, -shm, -journal
+    /^\/\.env/i,
+    /^\/\.git(\/|$)/i,
+    /^\/node_modules(\/|$)/i,
+    /^\/server\.js$/i,
+    /^\/package(-lock)?\.json$/i
+];
+app.use((req, res, next) => {
+    if (BLOCKED_PATHS.some(re => re.test(req.path)))
+        return res.status(404).send('Not found');
+    next();
+});
+
 app.use(express.static(path.join(__dirname)));
 // Serve uploaded files from persistent data dir
 app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads')));
@@ -55,19 +80,27 @@ const upload = multer({
 });
 
 /* ===================== DATABASE SETUP ===================== */
-const db = new Database(path.join(DATA_DIR, 'db.sqlite'));
-db.pragma('journal_mode = WAL');
+// `db` is reassignable so the backup-import endpoint can close and
+// re-open the connection after replacing the underlying file.
+let db;
+const DB_PATH = path.join(DATA_DIR, 'db.sqlite');
+
+function openDb() {
+    db = new Database(DB_PATH);
+    db.pragma('journal_mode = WAL');
+}
+
+openDb();
 console.log('Connected to SQLite database');
 initializeDatabase();
 
 function initializeDatabase() {
+    // Legacy: older versions stored admin credentials here. Credentials now
+    // live only in env vars, so drop the table to scrub any old password
+    // that might exist in a committed db.sqlite.
+    db.exec('DROP TABLE IF EXISTS admin');
+
     db.exec(`
-        CREATE TABLE IF NOT EXISTS admin (
-            id INTEGER PRIMARY KEY,
-            email TEXT UNIQUE,
-            password TEXT,
-            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
         CREATE TABLE IF NOT EXISTS showreels (
             id INTEGER PRIMARY KEY,
             filename TEXT,
@@ -121,15 +154,6 @@ function initializeDatabase() {
 
     const insertCat = db.prepare('INSERT OR IGNORE INTO categories (slug, displayName) VALUES (?, ?)');
     categories.forEach(cat => insertCat.run(cat.slug, cat.displayName));
-
-    const adminExists = db.prepare('SELECT id FROM admin WHERE email = ?').get(process.env.ADMIN_EMAIL);
-    if (!adminExists) {
-        db.prepare('INSERT INTO admin (email, password) VALUES (?, ?)').run(
-            process.env.ADMIN_EMAIL,
-            process.env.ADMIN_PASSWORD
-        );
-        console.log('Admin user created');
-    }
 }
 
 /* ===================== HELPER FUNCTIONS ===================== */
@@ -140,8 +164,11 @@ function getBestYTThumb(videoId) {
 }
 
 function verifyAdmin(email, password) {
-    const row = db.prepare('SELECT id FROM admin WHERE email = ? AND password = ?').get(email, password);
-    return !!row;
+    // Credentials live ONLY in env vars — never stored in the database — so
+    // the committed db.sqlite never carries the password (git-as-data safe).
+    return !!email && !!password
+        && email === process.env.ADMIN_EMAIL
+        && password === process.env.ADMIN_PASSWORD;
 }
 
 function getShowreel() {
@@ -428,6 +455,103 @@ app.delete('/api/projects/:id', (req, res) => {
     const result = db.prepare('DELETE FROM projects WHERE id = ?').run(req.params.id);
     if (result.changes === 0) return res.status(404).json({ success: false, message: 'Project not found' });
     res.json({ success: true });
+});
+
+/* ===================== BACKUP / RESTORE ===================== */
+// Multer target for the uploaded backup zip (temp file inside DATA_DIR)
+const backupUpload = multer({
+    dest: path.join(DATA_DIR, '_backup_tmp'),
+    limits: { fileSize: 500 * 1024 * 1024 }
+});
+
+// Export a full backup (db.sqlite + uploads + covers) as a downloadable zip.
+// POST (not GET) so the admin password never lands in a URL or server log.
+//   curl -X POST <url>/api/backup/export \
+//     -H "Content-Type: application/json" \
+//     -d '{"adminEmail":"...","password":"..."}' -o backup.zip
+app.post('/api/backup/export', (req, res) => {
+    const { adminEmail, password } = req.body;
+    if (!verifyAdmin(adminEmail, password))
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+
+    try {
+        // Flush the WAL into the main db file so the copy is complete
+        db.pragma('wal_checkpoint(TRUNCATE)');
+
+        const zip = new AdmZip();
+        if (fs.existsSync(DB_PATH)) zip.addLocalFile(DB_PATH);
+
+        const uploadsDir = path.join(DATA_DIR, 'uploads');
+        if (fs.existsSync(uploadsDir)) zip.addLocalFolder(uploadsDir, 'uploads');
+
+        const coversDir = path.join(DATA_DIR, 'covers');
+        if (fs.existsSync(coversDir)) zip.addLocalFolder(coversDir, 'covers');
+
+        const stamp = new Date().toISOString().slice(0, 10);
+        res.setHeader('Content-Type', 'application/zip');
+        res.setHeader('Content-Disposition', `attachment; filename="backup_${stamp}.zip"`);
+        res.send(zip.toBuffer());
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
+});
+
+// Import a backup zip: restores db.sqlite + uploads + covers.
+// The DB connection is closed, the file replaced, then re-opened.
+app.post('/api/backup/import', backupUpload.single('backup'), (req, res) => {
+    const { adminEmail, password } = req.body;
+
+    const cleanupUpload = () => {
+        if (req.file && fs.existsSync(req.file.path)) {
+            try { fs.rmSync(req.file.path, { force: true }); } catch (_) {}
+        }
+    };
+
+    if (!verifyAdmin(adminEmail, password)) {
+        cleanupUpload();
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: 'No backup file provided' });
+    }
+
+    const tmpDir = path.join(DATA_DIR, '_backup_extract');
+    try {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+        new AdmZip(req.file.path).extractAllTo(tmpDir, true);
+
+        // Restore uploads / covers folders (replace wholesale)
+        for (const folder of ['uploads', 'covers']) {
+            const src = path.join(tmpDir, folder);
+            if (fs.existsSync(src)) {
+                const dest = path.join(DATA_DIR, folder);
+                fs.rmSync(dest, { recursive: true, force: true });
+                fs.cpSync(src, dest, { recursive: true });
+            }
+        }
+
+        // Restore the database file, then re-open the connection
+        const importedDb = path.join(tmpDir, 'db.sqlite');
+        if (fs.existsSync(importedDb)) {
+            db.close();
+            for (const f of ['db.sqlite', 'db.sqlite-wal', 'db.sqlite-shm']) {
+                fs.rmSync(path.join(DATA_DIR, f), { force: true });
+            }
+            fs.copyFileSync(importedDb, DB_PATH);
+            openDb();
+            initializeDatabase(); // idempotent: ensures schema/seed exist
+        }
+
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+        cleanupUpload();
+        res.json({ success: true, message: 'Backup imported successfully' });
+    } catch (e) {
+        // Make sure the DB is usable again if we failed after closing it
+        try { if (!db || !db.open) openDb(); } catch (_) {}
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+        cleanupUpload();
+        res.status(500).json({ success: false, message: e.message });
+    }
 });
 
 // Static file serving

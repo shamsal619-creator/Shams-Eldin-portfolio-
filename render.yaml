@@ -1,0 +1,25 @@
+# Render.com blueprint — FREE plan, no credit card required.
+#
+# Persistence model: "git-as-data". The free plan has no persistent disk, so
+# db.sqlite and uploads/ are committed to the repo and DATA_DIR="." makes the
+# app read/write them right there. Every deploy restores the committed content.
+# To change content: edit locally via the admin panel, then commit + push.
+#
+# Cold starts: the free service sleeps after ~15 min idle. Keep it awake for
+# free with an uptime pinger (e.g. UptimeRobot) hitting the URL every 5 min.
+services:
+  - type: web
+    name: shams-eldin-portfolio
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      # Store data next to the code (the committed db.sqlite + uploads)
+      - key: DATA_DIR
+        value: "."
+      # Admin credentials — set these in the Render dashboard, never commit them
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

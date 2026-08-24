@@ -1,8 +1,11 @@
 node_modules/
 .env
-uploads/
-db.sqlite
+# NOTE: db.sqlite and uploads/ are intentionally COMMITTED (git-as-data model
+# for free hosting) so content survives redeploys. Only the transient WAL
+# sidecar files are ignored.
 db.sqlite-shm
 db.sqlite-wal
 db.sqlite-journal
 your-image.jpg
+_backup_tmp/
+_backup_extract/
