@@ -207,7 +207,10 @@ app.post('/api/upload-showreel', upload.single('showreel'), (req, res) => {
 
     try {
         const old = getShowreel();
-        if (old && fs.existsSync(old.filePath)) fs.unlinkSync(old.filePath);
+        if (old) {
+            const oldFile = path.join(DATA_DIR, 'uploads', old.filename);
+            if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
+        }
         db.prepare('DELETE FROM showreels').run();
         db.prepare('INSERT INTO showreels (filename, originalName, filesize, filePath, uploadedBy) VALUES (?, ?, ?, ?, ?)')
           .run(req.file.filename, req.file.originalname, req.file.size, req.file.path, adminEmail);
@@ -251,12 +254,15 @@ app.get('/api/showreel/watch', (req, res) => {
     const row = db.prepare('SELECT * FROM showreels ORDER BY uploadDate DESC LIMIT 1').get();
     if (!row) return res.status(404).json({ success: false, message: 'No showreel found' });
 
-    let file = row.filePath;
+    // Resolve the file by NAME inside the current uploads dir — never trust the
+    // stored absolute filePath, which was recorded on a different machine
+    // (local/Railway) and won't exist on another host.
+    const uploadsDir = path.join(DATA_DIR, 'uploads');
+    let file = path.join(uploadsDir, row.filename);
     if (quality !== 'auto') {
-        const dirPath = path.dirname(file);
         const ext = path.extname(file);
         const basename = path.basename(file, ext);
-        const qualityFile = path.join(dirPath, `${basename}_${quality}${ext}`);
+        const qualityFile = path.join(uploadsDir, `${basename}_${quality}${ext}`);
         if (fs.existsSync(qualityFile)) file = qualityFile;
     }
 
@@ -292,7 +298,8 @@ app.delete('/api/showreel', (req, res) => {
             return res.status(401).json({ success: false, message: 'Unauthorized' });
         const showreel = getShowreel();
         if (!showreel) return res.status(404).json({ success: false, message: 'No showreel to delete' });
-        if (fs.existsSync(showreel.filePath)) fs.unlinkSync(showreel.filePath);
+        const showreelFile = path.join(DATA_DIR, 'uploads', showreel.filename);
+        if (fs.existsSync(showreelFile)) fs.unlinkSync(showreelFile);
         db.prepare('DELETE FROM showreels').run();
         res.json({ success: true, message: 'Showreel deleted successfully' });
     } catch (e) {
