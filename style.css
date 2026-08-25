@@ -113,7 +113,10 @@ body::after {
     z-index: -1;
     pointer-events: none;
     opacity: 0.18;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' fill='rgba(0,0,0,0.06)'/%3E%3C/svg%3E");
+    /* Seamless noise: viewBox, filter region and tile size all = 180 so the
+       stitch boundary matches the CSS repeat boundary exactly (no seams).
+       0.85 × 180 = 153 whole noise cycles per tile → clean wrap. */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' fill='rgba(0,0,0,0.06)'/%3E%3C/svg%3E");
     background-repeat: repeat;
     background-size: 180px 180px;
 }
@@ -631,7 +634,9 @@ body::after {
     z-index: -1;
     pointer-events: none;
     opacity: .12;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' fill='rgba(17,16,16,0.08)'/%3E%3C/svg%3E");
+    /* Seamless: tile, filter region and background-size all 180px (0.95 × 180
+       = 171 whole cycles) so the noise wraps with no visible seams. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' fill='rgba(17,16,16,0.08)'/%3E%3C/svg%3E");
     background-repeat: repeat;
     background-size: 180px 180px;
 }
